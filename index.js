@@ -1,7 +1,8 @@
 import express from "express";
-import connectDB from './src/db/connect.js';
 import "express-async-errors"
 import dotenv from 'dotenv';
+import morgan from 'morgan';
+import connectDB from './src/db/connect.js';
 import notFoundMiddleware from './src/middlewares/not-found.js';
 import errorHandlerMiddleware from './src/middlewares/error-handler.js';
 
@@ -9,6 +10,7 @@ dotenv.config();
 
 const app = express();
 
+app.use(morgan('dev'))
 app.use(express.json())
 
 
