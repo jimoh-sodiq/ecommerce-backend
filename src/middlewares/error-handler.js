@@ -1,6 +1,5 @@
 import { StatusCodes } from "http-status-codes";
 import { createResponse } from '../utils/global.js';
-import { response } from 'express';
 
 const errorHandlerMiddleware = (err, req, res, next) => {
   // set default error

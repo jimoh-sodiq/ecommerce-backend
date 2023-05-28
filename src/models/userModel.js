@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import validator from "validator";
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -8,12 +9,9 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, "Email is required"],
+    unique: true,
     validate: {
-      validator: function (value) {
-        // Email validation regex pattern
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(value);
-      },
+      validator: validator.isEmail,
       message: "Invalid email format",
     },
   },
@@ -30,6 +28,11 @@ const UserSchema = new mongoose.Schema({
         "Password must contain at least 8 characters, including one uppercase letter and one lowercase letter",
     },
   },
+  role: {
+    type: String, 
+    enum: ['admin', 'user'],
+    default: 'user'
+  }
 });
 
 const User = mongoose.model("User", UserSchema);

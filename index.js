@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import connectDB from './src/db/connect.js';
 import notFoundMiddleware from './src/middlewares/not-found.js';
 import errorHandlerMiddleware from './src/middlewares/error-handler.js';
+import authRouter from './src/routes/authRoutes.js';
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(express.json())
 app.get('/', (req, res) => {
   res.send('e-commerce api')
 })
+
+app.use('/api/v1/auth', authRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
