@@ -1,4 +1,6 @@
 import { StatusCodes } from "http-status-codes";
+import { createResponse } from '../utils/global.js';
+import { response } from 'express';
 
 const errorHandlerMiddleware = (err, req, res, next) => {
   // set default error
@@ -33,7 +35,9 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     return res.status(500).json({ error: "MongoDB error" });
   }
 
-  return res.status(customError.statusCode).json({ msg: customError.msg });
+  const responseObject = createResponse(false, null, customError.msg)
+
+  return res.status(customError.statusCode).json(responseObject);
 };
 
 export default errorHandlerMiddleware;
