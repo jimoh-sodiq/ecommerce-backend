@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import User from "../models/userModel.js";
 import { createResponse } from "../utils/global.js";
 
