@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcrypt from "bcrypt";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -37,6 +38,19 @@ const UserSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+UserSchema.pre("save", async function () {
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+UserSchema.methods.comparePassword = async function (inCommingPassword) {
+  const isMatch = await bcrypt.comparePassword(
+    inCommingPassword,
+    this.password
+  );
+  return isMatch;
+};
 
 const User = mongoose.model("User", UserSchema);
 
