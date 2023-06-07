@@ -31,3 +31,8 @@ export function createJWT({ payload }) {
 export function isTokenValid({ token }) {
   jwt.verify((token, process.env.JWT_SECRET));
 }
+
+export function attachCookiesToResponse({res, user}){
+  const token = createJWT({ payload: user });
+  res.cookie('token', token, { httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) });
+}

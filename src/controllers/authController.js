@@ -1,6 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 import User from "../models/userModel.js";
-import { createResponse, createJWT, isTokenValid } from "../utils/global.js";
+import {
+  createResponse,
+  createJWT,
+  isTokenValid,
+  attachCookiesToResponse,
+} from "../utils/global.js";
 import jwt from "jsonwebtoken";
 
 export async function register(req, res) {
@@ -18,8 +23,7 @@ export async function register(req, res) {
 
   const tokenUser = { name: user.name, userId: user._id, role: user.role };
 
-  const token = createJWT({ payload: tokenUser });
-  res.cookie('token', token, { httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) });
+  attachCookiesToResponse({ res: res, user: tokenUser });
   res
     .status(StatusCodes.CREATED)
     .json(createResponse(true, { user: tokenUser }));
