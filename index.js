@@ -1,35 +1,40 @@
 import express from "express";
-import "express-async-errors"
-import dotenv from 'dotenv';
-import morgan from 'morgan';
-import connectDB from './src/db/connect.js';
-import notFoundMiddleware from './src/middlewares/not-found.js';
-import errorHandlerMiddleware from './src/middlewares/error-handler.js';
-import authRouter from './src/routes/authRoutes.js';
+import "express-async-errors";
+import dotenv from "dotenv";
+import morgan from "morgan";
+import connectDB from "./src/db/connect.js";
+import notFoundMiddleware from "./src/middlewares/not-found.js";
+import errorHandlerMiddleware from "./src/middlewares/error-handler.js";
+import authRouter from "./src/routes/authRoutes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
 const app = express();
 
-app.use(morgan('dev'))
-app.use(express.json())
+app.use(morgan("dev"));
+app.use(express.json());
+app.use(cookieParser());
 
+app.get("/", (req, res) => {
+  res.send("e-commerce api");
+});
 
-app.get('/', (req, res) => {
-  res.send('e-commerce api')
-})
+app.get("/api/v1", (req, res) => {
+  console.log(req.cookies);
+  res.send("cookie route");
+});
 
-app.use('/api/v1/auth', authRouter)
+app.use("/api/v1/auth", authRouter);
 
-app.use(notFoundMiddleware)
-app.use(errorHandlerMiddleware)
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 5000;
 
-
 const start = async () => {
   try {
-    await connectDB(process.env.MONGO_URI)
+    await connectDB(process.env.MONGO_URI);
     app.listen(port, () => {
       console.log(`Server is listening on port ${port}`);
     });
@@ -38,4 +43,4 @@ const start = async () => {
   }
 };
 
-start()
+start();
