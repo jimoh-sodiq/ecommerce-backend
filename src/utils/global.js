@@ -35,7 +35,7 @@ export function isTokenValid({ token }) {
 export function attachCookiesToResponse({ res, user }) {
   const token = createJWT({ payload: user });
   res.cookie("token", token, {
-    httpOnly: true,
+    httpOnly: process.env.NODE_ENV == "production" ? true : false,
     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     secure: process.env.NODE_ENV == "production" ? true : false,
     signed: true

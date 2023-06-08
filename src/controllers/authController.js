@@ -1,5 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import User from "../models/userModel.js";
+import { BadRequest, NotFoundError } from "../errors/index.js";
 import {
   createResponse,
   createJWT,
@@ -30,7 +31,26 @@ export async function register(req, res) {
 }
 
 export async function login(req, res) {
-  res.send("login constroller");
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new BadRequest("Please provide email and password");
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new NotFoundError("Invalid credentials");
+  }
+  const isPasswordCorrect = await user.comparePassword(password);
+
+  if (!isPasswordCorrect) {
+    throw new BadRequest("Password is incorrect");
+  }
+
+  attachCookiesToResponse({ res: res, user: { email } });
+  console.log("----------");
+  res.status(StatusCodes.OK).json(createResponse(true, { user }));
 }
 
 export async function logout(req, res) {
