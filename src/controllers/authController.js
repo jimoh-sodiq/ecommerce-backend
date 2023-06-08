@@ -47,12 +47,17 @@ export async function login(req, res) {
   if (!isPasswordCorrect) {
     throw new BadRequest("Password is incorrect");
   }
+  const tokenUser = { name: user.name, userId: user._id, role: user.role };
 
-  attachCookiesToResponse({ res: res, user: { email } });
+  attachCookiesToResponse({ res: res, user: tokenUser });
   console.log("----------");
   res.status(StatusCodes.OK).json(createResponse(true, { user }));
 }
 
 export async function logout(req, res) {
-  res.send("logout constroller");
+  res.cookie("token", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+  res.status(StatusCodes.OK);
 }
