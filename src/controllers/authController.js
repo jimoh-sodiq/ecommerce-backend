@@ -50,7 +50,6 @@ export async function login(req, res) {
   const tokenUser = { name: user.name, userId: user._id, role: user.role };
 
   attachCookiesToResponse({ res: res, user: tokenUser });
-  console.log("----------");
   res.status(StatusCodes.OK).json(createResponse(true, { user }));
 }
 
