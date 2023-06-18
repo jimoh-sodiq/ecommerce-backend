@@ -29,7 +29,7 @@ export function createJWT({ payload }) {
 }
 
 export function isTokenValid({ token }) {
-  jwt.verify((token, process.env.JWT_SECRET));
+  return jwt.verify(token, process.env.JWT_SECRET);
 }
 
 export function attachCookiesToResponse({ res, user }) {
