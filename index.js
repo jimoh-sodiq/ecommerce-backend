@@ -6,6 +6,7 @@ import connectDB from "./src/db/connect.js";
 import notFoundMiddleware from "./src/middlewares/not-found.js";
 import errorHandlerMiddleware from "./src/middlewares/error-handler.js";
 import authRouter from "./src/routes/authRoutes.js";
+import userRouter from "./src/routes/userRoutes.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -20,12 +21,13 @@ app.get("/", (req, res) => {
   res.send("e-commerce api");
 });
 
-app.get("/api/v1", (req, res) => {
-  console.log(req.signedCookies);
-  res.send("cookie route");
-});
+// app.get("/api/v1", (req, res) => {
+//   console.log(req.signedCookies);
+//   res.send("cookie route");
+// });
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/users", userRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
