@@ -40,5 +40,22 @@ export async function updateUser(req, res) {
 }
 
 export async function updateUserPassword(req, res) {
-  res.send("update user password");
+  const {oldPassword, newPassword} = req.body
+  if(!oldPassword || !newPassword) {
+    throw new BadRequest("Please provide old and new password")
+  }
+  if(oldPassword === newPassword) {
+    throw new BadRequest("New password cannot be the same as old password")
+  }
+  const user = await User.findOne({_id: req.user.userId})
+  if(!user) {
+    throw new NotFoundError("User not found")
+  }
+  const isPasswordCorrect = await user.comparePassword(oldPassword)
+  if(!isPasswordCorrect) {
+    throw new BadRequest("Incorrect password")
+  }
+  user.password = newPassword
+  await user.save()
+  res.status(StatusCodes.OK).json(createResponse(true, {}, "password updated successfully"));
 }
