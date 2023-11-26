@@ -3,8 +3,6 @@ import User from "../models/userModel.js";
 import { BadRequest, NotFoundError } from "../errors/index.js";
 import {
   createResponse,
-  createJWT,
-  isTokenValid,
   attachCookiesToResponse,
 } from "../utils/global.js";
 import jwt from "jsonwebtoken";
@@ -24,10 +22,10 @@ export async function register(req, res) {
 
   const tokenUser = { name: user.name, userId: user._id, role: user.role };
 
-  attachCookiesToResponse({ res: res, user: tokenUser });
+  attachCookiesToResponse({ res, user: tokenUser });
   res
     .status(StatusCodes.CREATED)
-    .json(createResponse(true, { user: tokenUser }));
+    .json(createResponse(true, { user: tokenUser}, "user created successfully"));
 }
 
 export async function login(req, res) {
@@ -48,9 +46,8 @@ export async function login(req, res) {
     throw new BadRequest("Password is incorrect");
   }
   const tokenUser = { name: user.name, userId: user._id, role: user.role };
-
   attachCookiesToResponse({ res: res, user: tokenUser });
-  res.status(StatusCodes.OK).json(createResponse(true, { user }));
+  res.status(StatusCodes.OK).json(createResponse(true, { user }, "logged in successfully"));
 }
 
 export async function logout(req, res) {
@@ -58,5 +55,5 @@ export async function logout(req, res) {
     httpOnly: true,
     expires: new Date(Date.now()),
   });
-  res.status(StatusCodes.OK);
+  res.status(StatusCodes.OK).json(createResponse(true, null, "Logged out successfully"));
 }

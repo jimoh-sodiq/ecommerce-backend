@@ -2,23 +2,24 @@ import jwt from "jsonwebtoken";
 
 /**
  *
- * @param {*} success true | false
- * @param {*} errorMessage error text
- * @param {*} data { key: value }
- * @returns void
+ * @param {boolean} success true | false
+ * @param {string} message error text
+ * @param {object | null} data { key: value }
+ * @returns {{}}
  */
 
-export function createResponse(success, data = null, errorMessage = null) {
+export function createResponse(success, data = null, message = "") {
   return {
-    success: success,
-    data: data,
-    message: errorMessage,
+    success,
+    data,
+    message,
   };
 }
 
 /**
- * @param {*}
+ * @param {{key: value}} payload
  * @tutorial it creates a jwt token
+ * @returns string
  */
 
 export function createJWT({ payload }) {
@@ -38,6 +39,6 @@ export function attachCookiesToResponse({ res, user }) {
     httpOnly: process.env.NODE_ENV == "production" ? true : false,
     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     secure: process.env.NODE_ENV == "production" ? true : false,
-    signed: true
+    signed: true,
   });
 }

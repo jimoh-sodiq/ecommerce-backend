@@ -22,11 +22,17 @@ export async function getSingleUser(req, res) {
   if (!user) {
     throw new NotFoundError("No user with this id");
   }
-  res.status(StatusCodes.OK).json(createResponse(true, { userData: user }, "user found"));
+  res
+    .status(StatusCodes.OK)
+    .json(createResponse(true, { userData: user }, "user found"));
 }
 
 export async function showCurrentUser(req, res) {
-  res.send("show current user");
+  res
+    .status(StatusCodes.OK)
+    .json(
+      createResponse(true, { user: req.user }, "user retrieved successfully")
+    );
 }
 
 export async function updateUser(req, res) {

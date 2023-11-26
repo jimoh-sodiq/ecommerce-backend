@@ -1,4 +1,4 @@
-import { Router } from "express";
+import express from "express";
 import {
   updateUser,
   updateUserPassword,
@@ -6,12 +6,12 @@ import {
   getSingleUser,
   showCurrentUser,
 } from "../controllers/userController.js";
-import authenticateUser from "../middlewares/authentication.js";
+import {authorizePermissions, authenticateUser} from "../middlewares/authentication.js";
 
-const router = Router();
+const router = express.Router();
 
-router.route("/").get(authenticateUser, getAllUsers);
-router.route("/show").get(showCurrentUser);
+router.route("/").get(authenticateUser, authorizePermissions('admin'), getAllUsers);
+router.route("/show").get(authenticateUser, showCurrentUser);
 router.route("/update").patch(updateUser);
 router.route("/update-password").patch(updateUserPassword);
 router.route("/:id").get(getSingleUser);
