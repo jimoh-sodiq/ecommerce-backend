@@ -2,11 +2,8 @@ import { StatusCodes } from "http-status-codes";
 import User from "../models/userModel.js";
 import { UnauthenticatedError, UnauthorizedError } from "../errors/index.js";
 import {
-  createResponse,
-  createJWT,
-  isTokenValid,
-  attachCookiesToResponse,
-} from "../utils/global.js";
+  isTokenValid
+} from "../utils/index.js";
 
 const authenticateUser = async (req, res, next) => {
   const token = req.signedCookies.token;

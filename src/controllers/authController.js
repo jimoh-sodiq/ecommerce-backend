@@ -1,10 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import User from "../models/userModel.js";
 import { BadRequest, NotFoundError } from "../errors/index.js";
-import {
-  createResponse,
-  attachCookiesToResponse,
-} from "../utils/global.js";
+import {createTokenUser, createResponse, attachCookiesToResponse} from '../utils/index.js';
 import jwt from "jsonwebtoken";
 
 export async function register(req, res) {
@@ -20,7 +17,7 @@ export async function register(req, res) {
   const role = userCount ? "user" : "admin";
   const user = await User.create({ email, password, name, role });
 
-  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  const tokenUser = createTokenUser(user);
 
   attachCookiesToResponse({ res, user: tokenUser });
   res
@@ -45,9 +42,9 @@ export async function login(req, res) {
   if (!isPasswordCorrect) {
     throw new BadRequest("Password is incorrect");
   }
-  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+  const tokenUser = createTokenUser(user);
   attachCookiesToResponse({ res: res, user: tokenUser });
-  res.status(StatusCodes.OK).json(createResponse(true, { user }, "logged in successfully"));
+  res.status(StatusCodes.OK).json(createResponse(true, { user: tokenUser }, "logged in successfully"));
 }
 
 export async function logout(req, res) {
