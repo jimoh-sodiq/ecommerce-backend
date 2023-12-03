@@ -7,6 +7,7 @@ import notFoundMiddleware from "./src/middlewares/not-found.js";
 import errorHandlerMiddleware from "./src/middlewares/error-handler.js";
 import authRouter from "./src/routes/authRoutes.js";
 import userRouter from "./src/routes/userRoutes.js";
+import productRouter from "./src/routes/productRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors"
 
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/products", productRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
