@@ -5,19 +5,26 @@ import {
   getSingleProduct,
   updateProduct,
   deleteProduct,
-  uploadImage
+  uploadImage,
 } from "../controllers/productController.js";
-import {authorizePermissions, authenticateUser} from "../middlewares/authentication.js";
-
+import {
+  authorizePermissions,
+  authenticateUser,
+} from "../middlewares/authentication.js";
 
 const router = express.Router();
 
-router.route("/").get(getAllProducts);
-router.route("/:id").get(getSingleProduct);
-router.route("/create").post(authorizePermissions('admin'),createProduct);
-router.route("/update").patch(authorizePermissions('admin'),updateProduct);
-router.route("/delete").delete(authorizePermissions('admin'),deleteProduct);
-router.route("/upload-image").post(authorizePermissions('admin'),uploadImage);
+router
+  .route("/")
+  .get(getAllProducts)
+  .post(authenticateUser, authorizePermissions("admin"), createProduct);
 
+router.route("/upload-image").post(authenticateUser,authorizePermissions("admin"), uploadImage);
+
+router
+  .route("/:id")
+  .get(getSingleProduct)
+  .patch(authenticateUser, authorizePermissions("admin"), updateProduct)
+  .delete(authenticateUser, authorizePermissions("admin"), deleteProduct);
 
 export default router;
