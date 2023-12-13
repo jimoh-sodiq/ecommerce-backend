@@ -19,7 +19,7 @@ export async function getSingleProduct(req, res) {
    const {id: productId } = req.params
    const product = await Product.findOne({_id: productId})
    if(!product) {
-      throw new NotFoundError(`No product found for product with id ${productId}`)
+      throw new NotFoundError(`No product found with id ${productId}`)
    }
    return res.status(StatusCodes.OK).json(createResponse(true, {product}, "Product fetched successfully"))
 }
@@ -28,20 +28,21 @@ export async function updateProduct(req, res) {
    const {id: productId } = req.params
    const product = await Product.findOneAndUpdate({_id: productId}, req.body, {new: true, runValidators: true})
    if(!product) {
-      throw new NotFoundError(`No product found for product with id ${productId}`)
+      throw new NotFoundError(`No product found with id ${productId}`)
    }
    return res.status(StatusCodes.OK).json(createResponse(true, {product}, "Product updated successfully"))
 }
+
 export async function deleteProduct(req, res) {
    const {id: productId } = req.params
    const product = await Product.findOne({_id: productId})
    if(!product) {
-      throw new NotFoundError(`No product found for product with id ${productId}`)
+      throw new NotFoundError(`No product found with id ${productId}`)
    }
-
    await product.remove()
    return res.status(StatusCodes.OK).json(createResponse(true, null, "Product deleted successfully"))
 }
+
 export async function uploadImage(req, res) {
    return res.send("uploadImage")
 }

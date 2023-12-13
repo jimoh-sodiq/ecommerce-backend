@@ -8,18 +8,26 @@ import errorHandlerMiddleware from "./src/middlewares/error-handler.js";
 import authRouter from "./src/routes/authRoutes.js";
 import userRouter from "./src/routes/userRoutes.js";
 import productRouter from "./src/routes/productRoutes.js";
+import reviewRouter from "./src/routes/reviewRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors"
+import fileUpload from "express-fileupload"
 
 
 dotenv.config();
 
 const app = express();
 
+
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(cors())
+app.use(express.static("./public"))
+
+app.use(fileUpload());
+
+app.use(fileUpload())
 
 app.get("/", (req, res) => {
   res.send("e-commerce api");
@@ -28,6 +36,8 @@ app.get("/", (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/reviews", reviewRouter);
+
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
