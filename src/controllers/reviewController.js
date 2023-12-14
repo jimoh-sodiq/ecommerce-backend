@@ -41,7 +41,19 @@ export async function getSingleReview(req, res) {
 }
 
 export async function updateReview(req, res) {
-    res.send('update review')
+    const {rating, comment, title} = req.body
+    const reviewId = req.params.id
+    const review  = await Review.findOne({_id: reviewId})
+    console.log(review)
+    if (!review) {
+        throw new NotFoundError("review not found")
+    }
+    checkPermissions(req.user, review.user)
+    review.comment = comment ?? review.comment
+    review.title = title ?? review.title
+    review.rating = rating ?? review.rating
+    await review.save()
+    return res.status(StatusCodes.OK).json(createResponse(true, {review}, "review updated successfully"))
 }
 
 export async function deleteReview(req, res) {
@@ -50,9 +62,7 @@ export async function deleteReview(req, res) {
     if(!review){
         throw new NotFoundError("review not found")
     }
-    if(!checkPermissions(req.user.userId, review.user)){
-        throw new BadRequest("not authorized to delete this review")
-    }
+    checkPermissions(req.user, review.user)
     await review.remove()
     
     res.status(StatusCodes.OK).json(createResponse(true, {review}, "review deleted successfully"))
