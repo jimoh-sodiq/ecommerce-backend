@@ -84,3 +84,17 @@ export async function deleteReview(req, res) {
     .status(StatusCodes.OK)
     .json(createResponse(true, { review }, "review deleted successfully"));
 }
+
+export async function getSingleProductReviews(req, res) {
+  const productId = req.params.id;
+  const reviews = await Review.find({ product: productId });
+  res
+    .status(StatusCodes.OK)
+    .json(
+      createResponse(
+        true,
+        { reviews, count: reviews.length },
+        "review deleted successfully"
+      )
+    );
+}
