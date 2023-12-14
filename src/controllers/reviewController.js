@@ -4,6 +4,7 @@ import { createResponse } from '../utils/global.js'
 import Product from "../models/productModel.js";
 import BadRequest from '../errors/bad-request.js';
 import NotFoundError from '../errors/notfound-error.js';
+import { checkPermissions } from '../utils/checkPermissions.js';
 
 
 
@@ -44,5 +45,16 @@ export async function updateReview(req, res) {
 }
 
 export async function deleteReview(req, res) {
-    res.send('delete review')
+    const reviewId = req.params.id
+    const review  = await Review.findOne({_id: reviewId})
+    if(!review){
+        throw new NotFoundError("review not found")
+    }
+    if(!checkPermissions(req.user.userId, review.user)){
+        throw new BadRequest("not authorized to delete this review")
+    }
+    await review.remove()
+    
+    res.status(StatusCodes.OK).json(createResponse(true, {review}, "review deleted successfully"))
+
 }
