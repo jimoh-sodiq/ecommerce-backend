@@ -30,7 +30,7 @@ export async function createReview(req, res) {
 export async function getAllReviews(req, res) {
   const reviews = await Review.find({})
     .populate({ path: "product", select: "name company price" })
-    .populate({ path: "user", select: "name email" });
+    .populate({ path: "user", select: "name" });
   res
     .status(StatusCodes.OK)
     .json(

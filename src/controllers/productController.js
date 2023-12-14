@@ -17,7 +17,7 @@ export async function getAllProducts(req, res) {
 
 export async function getSingleProduct(req, res) {
    const {id: productId } = req.params
-   const product = await Product.findOne({_id: productId})
+   const product = await Product.findOne({_id: productId}).populate({path: 'reviews', select: "rating title comment"})
    if(!product) {
       throw new NotFoundError(`No product found with id ${productId}`)
    }
