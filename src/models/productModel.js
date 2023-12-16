@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import User from "./userModel.js";
 
-const productSchema = new mongoose.Schema(
+const ProductSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -63,7 +63,7 @@ const productSchema = new mongoose.Schema(
       default: 0
     },
     user: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.ObjectId,
       ref: "User",
       required: true,
     },
@@ -71,16 +71,16 @@ const productSchema = new mongoose.Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-productSchema.virtual("reviews", {
+ProductSchema.virtual("reviews", {
   ref: "Review",
   localField: "_id",
   foreignField: "product",
 });
 
-productSchema.pre("remove", async function (next) {
+ProductSchema.pre("remove", async function (next) {
   await this.model("Review").deleteMany({ product: this._id })
 })
 
-const Product = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", ProductSchema);
 
 export default Product;
