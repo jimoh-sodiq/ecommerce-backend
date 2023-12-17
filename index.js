@@ -13,11 +13,27 @@ import orderRouter from "./src/routes/orderRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors"
 import fileUpload from "express-fileupload"
+import rateLimiter from "express-rate-limit"
+import mongoSanitize from 'express-mongo-sanitize';
+import helmet from "helmet";
+
 
 
 dotenv.config();
 
 const app = express();
+
+app.set('trust proxy', 1)
+app.use(
+  rateLimiter({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  })
+);
+app.use(helmet)
+app.use(mongoSanitize)
 
 
 app.use(morgan("dev"));
