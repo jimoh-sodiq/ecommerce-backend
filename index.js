@@ -32,8 +32,8 @@ app.use(
     legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   })
 );
-app.use(helmet)
-app.use(mongoSanitize)
+app.use(helmet())
+app.use(mongoSanitize())
 
 
 app.use(morgan("dev"));
@@ -43,8 +43,6 @@ app.use(cors())
 app.use(express.static("./public"))
 
 app.use(fileUpload());
-
-app.use(fileUpload())
 
 app.get("/", (req, res) => {
   res.send("e-commerce api");
