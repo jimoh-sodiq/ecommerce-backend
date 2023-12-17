@@ -3,6 +3,7 @@ import Product from "../models/productModel.js";
 import { StatusCodes } from "http-status-codes";
 import { BadRequest, NotFoundError } from "../errors/index.js";
 import { createResponse } from "../utils/global.js";
+import { checkPermissions } from '../utils/checkPermissions.js';
 
 const fakeStripeApi = async ({ amount, currency }) => { 
   const clientSecret = "arandomclientsecret"
@@ -61,16 +62,43 @@ export async function createOrder(req, res) {
     res.status(StatusCodes.CREATED).json(createResponse(true, {order, clientSecret: order.clientSecret}));
 }
 
-export async function updateOrder(req, res) {
-  res.send("update order");
+export async function getAllOrders(req, res) {
+  const orders = await Order.find({})
+  res.status(StatusCodes.OK).json(createResponse(true, {orders, count: orders.length}, "orders retrieved successfully"));
 }
 
+
 export async function getCurrentUserOrder(req, res) {
-  res.send("current user order");
+  const userId = req.user.userId;
+  const orders = await Order.find({ user: userId })
+  res.status(StatusCodes.OK).json(createResponse(true, {orders, count: orders.length}, "orders retrieved successfully"));
 }
+
+
 export async function getSingleOrder(req, res) {
-  res.send("get single order");
+  const orderId = req.params.id
+  const order = await Order.findOne({_id:orderId})
+  if(!order) {
+    throw new NotFoundError("order not found")
+  }
+  checkPermissions(req.user, order.user)
+  res.status(StatusCodes.OK).json(createResponse(true, {order}, "order retrieved successfully"));
 }
-export async function getAllOrders(req, res) {
-  res.send("get all order");
+
+
+export async function updateOrder(req, res) {
+  const {paymentIntentId} = req.body
+  const orderId = req.params.id
+  const userId = req.user.userId;
+
+  const order = await Order.findOne({_id:orderId})
+  if(!order) {
+    throw new NotFoundError("order not found")
+  }
+  checkPermissions(req.user, order.user)
+  order.paymentId = paymentIntentId
+  order.status = 'paid'
+  await order.save()
+  res.status(StatusCodes.OK).json(createResponse(true, {order}, "order updated successfully"));
+
 }
